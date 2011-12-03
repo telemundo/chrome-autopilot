@@ -1,0 +1,11 @@
+{
+    "extDesc"  : {
+        "message" : "Navigate la red automáticamente; con el clic de un botón."
+    },
+    "extName"  : {
+        "message" : "Piloto Automático"
+    },
+    "extTitle" : {
+        "message" : "Activa el Piloto Automático"
+    }
+}

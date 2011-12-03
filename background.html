@@ -1,0 +1,148 @@
+<html>
+<head>
+<script type="text/javascript" src="common/js/lib/require.js"></script>
+<script type="text/javascript">
+    require(["common/js/lib/jquery.js", "common/js/storage.js"], function() {
+        /** Global extension variables */
+        var rotation_tab = null;
+        var rotation_list = [];
+        var rotation_interval = null;
+    	/**
+    	 * Retrieves all the extension settings.
+    	 * 
+    	 * @returns {Object} Extension settings.
+    	 *
+    	 * @function
+    	 */
+        ext_settings_get = function() {
+            var defaults = {
+                rotation_initial   : true,
+                rotation_enabled   : false,
+                rotation_frequency : 60,
+                rotation_urls      : []
+            };
+            var settings = storage_get('settings') || {};
+            return $.extend(true, defaults, settings);
+        };
+        /**
+         * Stores a single extension setting.
+         * 
+         * @param {String} key Extension setting key.
+         * @param value Extension setting value.
+         *
+         * @function
+         */
+        ext_settings_set = function(key, value) {
+            var settings = ext_settings_get();
+            settings[key] = value;
+            storage_set('settings', settings);
+        };
+        /**
+         * Loads the given URL into a specific tab.
+         * 
+         * @param {String} url The URL to load.
+         *
+         * @function
+         */
+        ext_load_url = function(url) {
+        	var options = { url:url, selected:true };
+        	var callback = function(tab) {
+                rotation_tab = tab;
+            };
+            if (rotation_tab == null) {
+                chrome.tabs.create(options, callback);
+            } else {
+                chrome.tabs.update(rotation_tab.id, options, callback);
+            }
+        };
+        /**
+         * Resets the rotation list.
+         *
+         * @function
+         */
+        ext_rotation_reset = function() {
+            rotation_list = [];
+            ext_rotation_start();
+        };
+        /**
+         * Starts the rotation of the URL list.
+         *
+         * @function
+         */
+        ext_rotation_start = function() {
+        	ext_rotation_stop();
+            var settings = ext_settings_get();
+            if (settings.rotation_enabled) {
+                var callback = function() {
+                	if (settings.rotation_urls.length > 0) {
+                        if (rotation_list.length == 0) {
+                            rotation_list = settings.rotation_urls.slice();
+                        }
+                        ext_load_url(rotation_list.shift());
+                	}
+                };
+                callback();
+                rotation_interval = window.setInterval(callback, settings.rotation_frequency * 1000);
+            }
+        };
+        /**
+         * Stops the rotation of the URL list.
+         *
+         * @function
+         */
+        ext_rotation_stop = function() {
+            window.clearInterval(rotation_interval);
+        };
+        /**
+         * Enables/disabled the extension.
+         * 
+         * @param {Boolean} [initial] This value is used to perform certain actions when the extension loads.
+         * 
+         * @function
+         */
+         ext_rotation_toggle = function(initial) {
+            var settings = ext_settings_get();
+            if (initial === true) {
+            	if( settings.rotation_initial === true )
+                {
+                    ext_settings_set('rotation_initial', false);
+                    chrome.tabs.create({ url:"options.html", selected:true });
+                }
+            } else {
+            	settings.rotation_enabled = !settings.rotation_enabled;
+                ext_settings_set('rotation_enabled', settings.rotation_enabled);
+            }
+            if (settings.rotation_enabled) {
+                chrome.browserAction.setIcon({ path:"common/img/icon-app-enabled.png" });
+                ext_rotation_start();
+            } else {
+                chrome.browserAction.setIcon({ path:"common/img/icon-app-disabled.png" });
+                ext_rotation_stop();
+            }
+        };
+        /** Create a background request event listener */
+        chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
+    	    switch (String(request.command).toLowerCase()) {
+        	    case 'execute':
+        	    	request.args.push(sender);
+        	    	var fn = window[request.fn];
+        	        var result = fn.apply(window, request.args);
+        	        sendResponse(result);
+        	    break;
+    	    }
+        });
+        /** Create a tab close event listener */
+        chrome.tabs.onRemoved.addListener(function(tabId, removeInfo) {
+        	if (rotation_tab !== null) {
+        		if (tabId == rotation_tab.id) {
+        			rotation_tab = null;
+        		}
+        	}
+        });
+        /** Perform initial toggle of the app/icon. */
+        ext_rotation_toggle(true);
+    });
+</script>
+</head>
+<body></body>
+</html>

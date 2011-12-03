@@ -1,0 +1,15 @@
+<html>
+<head>
+<script type="text/javascript" src="common/js/lib/require.js"></script>
+<script type="text/javascript">
+    require(["common/js/core.js"], function() {
+    	var callback = function() {
+    		window.close();
+    	}
+    	/** Toggle the extension rotation */
+    	core_execute('ext_rotation_toggle', callback);
+    });
+</script>
+</head>
+<body></body>
+</html>

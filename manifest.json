@@ -1,0 +1,20 @@
+{
+    "name"            : "__MSG_extName__",
+    "description"     : "__MSG_extDesc__",
+    "version"         : "0.1.7",
+    "default_locale"  : "en",
+    "homepage_url"    : "http://www.telemundoeventos.com/chrome/autopilot/",
+    "update_url"      : "http://www.telemundoeventos.com/chrome/autopilot/updates.php",
+    "background_page" : "background.html",
+    "options_page"    : "options.html",
+    "permissions"     : [ "tabs", "notifications" ],
+    "icons"           : {
+        "128"             : "common/img/icon-128.png",
+        "48"              : "common/img/icon-48.png"
+    },
+    "browser_action"  : {
+        "default_title"   : "__MSG_extTitle__",
+        "default_icon"    : "common/img/icon-app-enabled.png",
+        "popup"           : "popup.html"
+    }
+}

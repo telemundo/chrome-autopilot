@@ -1,0 +1,42 @@
+body {
+    background-color: #212B40;
+    margin: 0;
+    padding: 0;
+    font-family: Helvetica, Arial, Verdana, sans-serif;
+    font-size: 11pt;
+}
+.wrapper {
+    width: 980px;
+    margin: 10px auto;
+}
+fieldset.configuration {
+    background-color: #FFF;
+    border-radius: 5px;
+    border: none;
+}
+fieldset.configuration legend {
+    background-color: #C2E078;
+    border-radius: 5px;
+    border: none;
+    padding: 2px 6px 4px;
+    color: #547B97;
+    
+}
+fieldset.configuration label {
+    width: 100px;
+    font-weight: bold;
+    text-align: right;
+    margin-right: 4px;
+    color: #547B97;
+    float: left;
+}
+fieldset.configuration .line {
+    padding: 2px 0;
+}
+fieldset.configuration textarea#rotation_urls {
+    width: 825px;
+    height: 400px;
+}
+fieldset.configuration .actions input {
+    float: right;
+}

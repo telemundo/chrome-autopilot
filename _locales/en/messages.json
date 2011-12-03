@@ -1,0 +1,11 @@
+{
+    "extDesc"  : {
+        "message" : "Navigate the web automatically; with the click of a button."
+    },
+    "extName"  : {
+        "message" : "Autopilot"
+    },
+    "extTitle" : {
+        "message" : "Toggle the Autopilot"
+    }
+}

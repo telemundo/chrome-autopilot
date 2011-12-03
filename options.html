@@ -1,0 +1,55 @@
+<html>
+<head>
+<link rel="stylesheet" href="common/css/options.css" />
+<script type="text/javascript" src="common/js/lib/require.js"></script>
+<script type="text/javascript">
+    require(["common/js/lib/jquery.js", "common/js/core.js"], function() {
+        $(document).ready(function() {
+            var display_settings = function(settings) {
+	            $('#rotation_frequency option:first').remove();
+	            $('#rotation_urls').val(settings.rotation_urls.join("\n"));
+	            $('#rotation_frequency').val(String(settings.rotation_frequency))
+            };
+            core_execute('ext_settings_get', display_settings);
+            $('#save_settings').click(function() {
+                var url_string = String($('#rotation_urls').val()).replace(/(\r?\n)+/gm, "\n");
+                var url_array = url_string.split("\n");
+                if (url_array.length > 0) {
+                    if (url_array[url_array.length-1] == '') {
+                    	url_array.pop();
+                    }
+                }
+                core_execute('ext_settings_set', 'rotation_urls', url_array);
+                core_execute('ext_settings_set', 'rotation_frequency', $('#rotation_frequency').val());
+                core_execute('ext_rotation_reset');
+            });
+        });
+    });
+</script>
+</head>
+<body>
+    <div class="wrapper">
+        <fieldset class="configuration">
+            <legend>Configuration</legend>
+            <div class="line">
+                <label for="rotation_urls">URLs:</label>
+                <textarea id="rotation_urls" name="rotation_urls"></textarea>
+            </div>
+            <div class="line">
+                <label for="rotation_frequency">Frequency:</label>
+                <select id="rotation_frequency" name="rotation_frequency">
+                    <option value="0"></option>
+                    <option value="15">15 Seconds</option>
+                    <option value="30">30 Seconds</option>
+                    <option value="60">1 Minute</option>
+                    <option value="120">2 Minutes</option>
+                    <option value="300">5 Minutes</option>
+                </select>
+            </div>
+            <div class="actions">
+                <input type="button" id="save_settings" name="save_settings" value="Save" />
+            </div>
+        </fieldset>
+    </div>
+</body>
+</html>
